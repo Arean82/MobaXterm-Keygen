@@ -7,14 +7,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MobaXterm Keygen</title>
   <meta name="description" content="Professional Key Generator for MobaXterm - Designed by Zarfala" />
-  <link rel="icon" href="https://i.imgur.com/FtcF9ZP.png" />
+  <link rel="icon" href="logo/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="./css/pure-min.css?=2" rel="stylesheet" />
-  <link href="./css/style.css" rel="stylesheet" />
   <link href="./css/fire.css" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -273,6 +271,15 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
   </style>
   <!-- Meta tags for better SEO and sharing -->
   <meta property="og:title" content="MobaXterm Keygen" />
@@ -282,6 +289,10 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="MobaXterm Keygen">
   <meta name="twitter:description" content="Professional Key Generator for MobaXterm created by Zarfala">
+  <meta property="og:url" content="https://mobaxterm-keygen.vercel.app/" />
+  <meta property="og:image" content="https://mobaxterm-keygen.vercel.app/logo/logo.png" />
+  <meta name="twitter:image" content="https://mobaxterm-keygen.vercel.app/logo/logo.png" />
+  <link rel="canonical" href="https://mobaxterm-keygen.vercel.app/" />
   <script>
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
@@ -337,7 +348,7 @@
                   class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
               </span>
-              <span>v20.X, 26.4 & 26.5 Compatible</span>
+              <span>v20.X, 25.X, 26.4 & 26.5 Compatible</span>
             </div>
 
             <!-- Main Title -->
@@ -348,7 +359,7 @@
               </span>
             </h1>
             <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm sm:text-base max-w-sm mx-auto">
-              Fast, and secure license generator.
+              Fast, secure license generation.
             </p>
 
             <!-- Theme Toggle -->
@@ -372,20 +383,25 @@
           <div class="mb-10 relative z-10 flex justify-center w-full">
             <nav
               class="flex space-x-2 bg-slate-200/60 dark:bg-slate-800/60 p-1.5 rounded-2xl w-full max-w-sm mx-auto shadow-inner border border-slate-300/30 dark:border-slate-700/50"
-              aria-label="Tabs">
-              <button @click="activeTab = 'keyGenerator'"
-                :class="[activeTab === 'keyGenerator' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200', 'w-1/2 py-2.5 text-sm sm:text-base font-bold transition-all duration-300 rounded-xl tracking-wide']">
+              role="tablist" aria-label="Tabs" @keydown="onTabKeydown">
+              <button id="tab-keyGenerator" type="button" role="tab"
+                :aria-selected="activeTab === 'keyGenerator'" aria-controls="panel-keyGenerator"
+                :tabindex="activeTab === 'keyGenerator' ? 0 : -1" @click="activeTab = 'keyGenerator'"
+                :class="[activeTab === 'keyGenerator' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200', 'w-1/2 py-2.5 text-sm sm:text-base font-bold transition-all duration-300 rounded-xl tracking-wide focus:outline-none focus:ring-2 focus:ring-primary-500']">
                 Key Generator
               </button>
-              <button @click="activeTab = 'customMerger'"
-                :class="[activeTab === 'customMerger' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200', 'w-1/2 py-2.5 text-sm sm:text-base font-bold transition-all duration-300 rounded-xl tracking-wide']">
+              <button id="tab-customMerger" type="button" role="tab"
+                :aria-selected="activeTab === 'customMerger'" aria-controls="panel-customMerger"
+                :tabindex="activeTab === 'customMerger' ? 0 : -1" @click="activeTab = 'customMerger'"
+                :class="[activeTab === 'customMerger' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200', 'w-1/2 py-2.5 text-sm sm:text-base font-bold transition-all duration-300 rounded-xl tracking-wide focus:outline-none focus:ring-2 focus:ring-primary-500']">
                 Merger
               </button>
             </nav>
           </div>
 
           <!-- Key Generator Tab -->
-          <div v-show="activeTab === 'keyGenerator'" class="relative z-10 animate-fade-in-up"
+          <div v-show="activeTab === 'keyGenerator'" id="panel-keyGenerator" role="tabpanel"
+            aria-labelledby="tab-keyGenerator" tabindex="0" class="relative z-10 animate-fade-in-up"
             style="animation-duration: 0.4s;">
             <form @submit.prevent="validateAndGenerate">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -405,6 +421,7 @@
                       </svg>
                     </div>
                     <select name="licenseType" id="licenseType" v-model="licenseType"
+                      aria-describedby="error-licenseType" :aria-invalid="!!errors.licenseType"
                       class="input-modern block w-full pl-11 pr-10 py-3.5 rounded-xl outline-none appearance-none font-medium cursor-pointer">
                       <option value="" disabled>Select Edition</option>
                       <option v-for="(val, key) in LICENSE_TYPES" :value="val">{{key}}</option>
@@ -416,8 +433,8 @@
                       </svg>
                     </div>
                   </div>
-                  <p v-if="errors.licenseType" class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{
-                    errors.licenseType }}</p>
+                  <p v-if="errors.licenseType" id="error-licenseType" aria-live="polite"
+                    class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.licenseType }}</p>
                 </div>
 
                 <!-- Username -->
@@ -433,11 +450,11 @@
                       </svg>
                     </div>
                     <input type="text" id="userName" v-model="userName" @input="validateUserName"
-                      placeholder="e.g. JohnDoe"
+                      placeholder="e.g. JohnDoe" aria-describedby="error-userName" :aria-invalid="!!errors.userName"
                       class="input-modern block w-full pl-11 pr-4 py-3.5 rounded-xl outline-none" />
                   </div>
-                  <p v-if="errors.userName" class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.userName }}
-                  </p>
+                  <p v-if="errors.userName" id="error-userName" aria-live="polite"
+                    class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.userName }}</p>
                 </div>
 
                 <!-- Version -->
@@ -453,10 +470,11 @@
                       </svg>
                     </div>
                     <input type="text" id="versionName" v-model="versionName" @input="validateVersion"
-                      placeholder="26.5" class="input-modern block w-full pl-11 pr-4 py-3.5 rounded-xl outline-none" />
+                      placeholder="26.5" aria-describedby="error-versionName" :aria-invalid="!!errors.versionName"
+                      class="input-modern block w-full pl-11 pr-4 py-3.5 rounded-xl outline-none" />
                   </div>
-                  <p v-if="errors.versionName" class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{
-                    errors.versionName }}</p>
+                  <p v-if="errors.versionName" id="error-versionName" aria-live="polite"
+                    class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.versionName }}</p>
                 </div>
 
                 <!-- Number of Users -->
@@ -474,20 +492,22 @@
                       </svg>
                     </div>
                     <input type="number" id="userNum" v-model="userNum" @input="validateUserNum" placeholder="1" min="1"
+                      max="1000" aria-describedby="error-userNum" :aria-invalid="!!errors.userNum"
                       class="input-modern block w-full pl-11 pr-4 py-3.5 rounded-xl outline-none" />
                   </div>
-                  <p v-if="errors.userNum" class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.userNum }}</p>
+                  <p v-if="errors.userNum" id="error-userNum" aria-live="polite"
+                    class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.userNum }}</p>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="col-span-1 md:col-span-2 pt-2">
-                  <button type="submit"
-                    class="btn-gradient w-full py-4 px-6 rounded-xl text-lg font-bold uppercase tracking-wider flex items-center justify-center gap-2 focus:outline-none focus:ring-4 focus:ring-primary-500/50">
+                  <button type="submit" :disabled="isGenerating"
+                    class="btn-gradient w-full py-4 px-6 rounded-xl text-lg font-bold uppercase tracking-wider flex items-center justify-center gap-2 focus:outline-none focus:ring-4 focus:ring-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
-                    Generate License
+                    <span>{{ isGenerating ? 'Generating…' : 'Generate License' }}</span>
                   </button>
                 </div>
 
@@ -496,7 +516,8 @@
           </div>
 
           <!-- Custom Settings Merger Tab -->
-          <div v-show="activeTab === 'customMerger'" class="relative z-10 space-y-8 animate-fade-in-up"
+          <div v-show="activeTab === 'customMerger'" id="panel-customMerger" role="tabpanel"
+            aria-labelledby="tab-customMerger" tabindex="0" class="relative z-10 space-y-8 animate-fade-in-up"
             style="animation-duration: 0.4s;">
 
             <!-- Info Box -->
@@ -549,8 +570,8 @@
                   <input type="file" id="licenseFileInput" @change="handleLicenseFileUpload" accept=".mxtpro"
                     class="hidden" />
                 </label>
-                <p v-if="errors.licenseFile" class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.licenseFile
-                  }}</p>
+                <p v-if="errors.licenseFile" id="error-licenseFile" aria-live="polite"
+                  class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.licenseFile }}</p>
               </div>
 
               <!-- Custom File Upload -->
@@ -576,19 +597,19 @@
                   <input type="file" id="customSettingsFileInput" @change="handleCustomSettingsFileUpload"
                     accept=".custom" class="hidden" />
                 </label>
-                <p v-if="errors.customSettingsFile" class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{
-                  errors.customSettingsFile }}</p>
+                <p v-if="errors.customSettingsFile" id="error-customSettingsFile" aria-live="polite"
+                  class="mt-1.5 ml-1 text-red-500 text-xs font-medium">{{ errors.customSettingsFile }}</p>
               </div>
             </div>
 
             <div class="pt-2">
-              <button @click="mergeFiles" :disabled="!licenseFile || !customSettingsFile"
+              <button @click="mergeFiles" :disabled="!licenseFile || !customSettingsFile || isMerging"
                 class="btn-gradient w-full py-4 px-6 rounded-xl text-lg font-bold uppercase tracking-wider flex items-center justify-center gap-2 focus:outline-none focus:ring-4 focus:ring-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
                 </svg>
-                Merge Files
+                <span>{{ isMerging ? 'Merging…' : 'Merge Files' }}</span>
               </button>
             </div>
           </div>
@@ -615,7 +636,7 @@
     </div>
 
     <!-- Toast notification -->
-    <div id="toast"
+    <div id="toast" role="status" aria-live="polite" aria-atomic="true"
       class="fixed bottom-6 right-6 px-6 py-4 rounded-xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-400 cubic-bezier(0.16, 1, 0.3, 1) z-50 hidden flex items-center gap-3 backdrop-blur-md font-semibold text-sm">
       <svg id="toast-icon-success" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -631,8 +652,9 @@
   <script src="./js/vue.min-2.6.12.js"></script>
   <script src="./js/FileSaver.js"></script>
   <script src="./js/jszip.js"></script>
-  <script src="./js/fire.js"></script>
   <script src="./js/alert.js"></script>
+  <script src="./js/mobaXtermGenerater.js"></script>
+  <script src="./js/mergeZipFiles.js"></script>
 
   <script>
     // Preloader functionality
@@ -682,18 +704,19 @@
       text.textContent = message;
       toast.classList.remove('hidden');
 
+      const successClasses = ['bg-green-50/90', 'dark:bg-green-900/90', 'text-green-700', 'dark:text-green-100', 'border-green-200', 'dark:border-green-800'];
+      const errorClasses = ['bg-red-50/90', 'dark:bg-red-900/90', 'text-red-700', 'dark:text-red-100', 'border-red-200', 'dark:border-red-800'];
+      const allStateClasses = successClasses.concat(errorClasses);
+
+      allStateClasses.forEach((cls) => toast.classList.remove(cls));
+      toast.classList.add('border');
+
       if (type === 'success') {
-        toast.className = toast.className.replace(/bg-\w+-50\/\d+/g, '');
-        toast.className = toast.className.replace(/text-\w+-600/g, '');
-        toast.classList.add('bg-green-50/90', 'dark:bg-green-900/90', 'text-green-700', 'dark:text-green-100', 'border', 'border-green-200', 'dark:border-green-800');
-        toast.classList.remove('bg-red-50/90', 'dark:bg-red-900/90', 'text-red-700', 'dark:text-red-100', 'border-red-200', 'dark:border-red-800');
+        successClasses.forEach((cls) => toast.classList.add(cls));
         iconSuccess.classList.remove('hidden');
         iconError.classList.add('hidden');
       } else {
-        toast.className = toast.className.replace(/bg-\w+-50\/\d+/g, '');
-        toast.className = toast.className.replace(/text-\w+-600/g, '');
-        toast.classList.add('bg-red-50/90', 'dark:bg-red-900/90', 'text-red-700', 'dark:text-red-100', 'border', 'border-red-200', 'dark:border-red-800');
-        toast.classList.remove('bg-green-50/90', 'dark:bg-green-900/90', 'text-green-700', 'dark:text-green-100', 'border-green-200', 'dark:border-green-800');
+        errorClasses.forEach((cls) => toast.classList.add(cls));
         iconError.classList.remove('hidden');
         iconSuccess.classList.add('hidden');
       }
@@ -712,10 +735,7 @@
       }, 4000);
     }
   </script>
-  <script type="module">
-    import { LicenseType, generateLicense } from './js/mobaXtermGenerater.js'
-    import { mergeZipFiles } from './js/mergeZipFiles.js'
-
+  <script>
     new Vue({
       el: '#app',
       data() {
@@ -726,6 +746,8 @@
           versionName: '26.5',
           userNum: '',
           activeTab: 'keyGenerator',
+          isGenerating: false,
+          isMerging: false,
           licenseFile: null,
           customSettingsFile: null,
           errors: {
@@ -739,6 +761,50 @@
         }
       },
       methods: {
+        isLetters(value) {
+          if (!value) {
+            return false;
+          }
+          for (let i = 0; i < value.length; i++) {
+            const c = value.charCodeAt(i);
+            const isUpper = c >= 65 && c <= 90;
+            const isLower = c >= 97 && c <= 122;
+            if (!isUpper && !isLower) {
+              return false;
+            }
+          }
+          return true;
+        },
+        isPositiveInteger(value) {
+          if (!value || value.length === 0) {
+            return false;
+          }
+          const first = value.charCodeAt(0);
+          if (first < 49 || first > 57) {
+            return false;
+          }
+          for (let i = 1; i < value.length; i++) {
+            const c = value.charCodeAt(i);
+            if (c < 48 || c > 57) {
+              return false;
+            }
+          }
+          return true;
+        },
+        onTabKeydown(event) {
+          if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
+            return;
+          }
+          event.preventDefault();
+          const next = this.activeTab === 'keyGenerator' ? 'customMerger' : 'keyGenerator';
+          this.activeTab = next;
+          this.$nextTick(() => {
+            const tab = document.getElementById('tab-' + next);
+            if (tab) {
+              tab.focus();
+            }
+          });
+        },
         validateLicenseType() {
           if (!this.licenseType) {
             this.errors.licenseType = 'Please select an edition';
@@ -752,8 +818,7 @@
             this.errors.userName = 'Username is required';
             return false;
           }
-          const regex = /^[a-zA-Z]+$/;
-          if (!regex.test(this.userName)) {
+          if (!this.isLetters(this.userName)) {
             this.errors.userName = 'Only letters allowed (no spaces, numbers or special chars)';
             return false;
           }
@@ -765,13 +830,22 @@
             this.errors.versionName = 'Version is required';
             return false;
           }
-          const regex = /^[1-9][0-9]*\.?\d{0,1}$/;
-          if (!regex.test(this.versionName)) {
+          const parts = this.versionName.split('.');
+          const majorPart = parts[0];
+          const minorPart = parts.length === 2 ? parts[1] : '';
+          const formatOk = parts.length <= 2
+            && this.isPositiveInteger(majorPart)
+            && (minorPart === '' || minorPart.length === 1);
+          if (!formatOk) {
+            this.errors.versionName = 'Enter a valid version format (e.g., 26.5)';
+            return false;
+          }
+          if (minorPart !== '' && minorPart !== '0' && !this.isPositiveInteger(minorPart)) {
             this.errors.versionName = 'Enter a valid version format (e.g., 26.5)';
             return false;
           }
           // Check if version is supported
-          const majorVersion = parseInt(this.versionName.split('.')[0]);
+          const majorVersion = parseInt(majorPart, 10);
           if (majorVersion !== 20 && majorVersion !== 25 && majorVersion !== 26) {
             this.errors.versionName = 'Currently only versions 20.X, 25.X and 26.X are supported';
             return false;
@@ -784,43 +858,51 @@
             this.errors.userNum = 'Number of users is required';
             return false;
           }
-          const regex = /^[1-9]+\d*$/;
-          if (!regex.test(this.userNum)) {
+          if (!this.isPositiveInteger(String(this.userNum))) {
             this.errors.userNum = 'Enter a valid number greater than 0';
+            return false;
+          }
+          if (parseInt(this.userNum, 10) > 1000) {
+            this.errors.userNum = 'Number of users must be 1000 or fewer';
             return false;
           }
           this.errors.userNum = '';
           return true;
         },
-        validateAndGenerate() {
+        async validateAndGenerate() {
+          if (this.isGenerating) {
+            return;
+          }
           const isLicenseTypeValid = this.validateLicenseType();
           const isUserNameValid = this.validateUserName();
           const isVersionValid = this.validateVersion();
           const isUserNumValid = this.validateUserNum();
 
-          if (isLicenseTypeValid && isUserNameValid && isVersionValid && isUserNumValid) {
-            try {
-              let versionNameArr = this.versionName.split('.');
-              const majorVersion = parseInt(versionNameArr[0]);
-              const minorVersion = versionNameArr.length === 2 ? (parseInt(versionNameArr[1]) || 0) : 0;
+          if (!(isLicenseTypeValid && isUserNameValid && isVersionValid && isUserNumValid)) {
+            return;
+          }
 
-              let licenseStr = generateLicense(this.licenseType, this.userName, this.userNum, majorVersion, minorVersion);
-              this.generateLicenseFile(licenseStr);
-              showToast('License generated successfully!', 'success');
-            } catch (error) {
-              console.error('Error generating license:', error);
-              showToast('Error generating license. Please try again.', 'error');
-            }
+          this.isGenerating = true;
+          try {
+            const versionNameArr = this.versionName.split('.');
+            const majorVersion = parseInt(versionNameArr[0], 10);
+            const minorVersion = versionNameArr.length === 2 ? (parseInt(versionNameArr[1], 10) || 0) : 0;
+
+            const licenseStr = generateLicense(this.licenseType, this.userName, this.userNum, majorVersion, minorVersion);
+            await this.generateLicenseFile(licenseStr);
+            showToast('License generated successfully!', 'success');
+          } catch (error) {
+            console.error('Error generating license:', error);
+            showToast('Error generating license. Please try again.', 'error');
+          } finally {
+            this.isGenerating = false;
           }
         },
         generateLicenseFile(licenseStr) {
-          let zip = new JSZip();
-          zip.file("Pro.key", licenseStr);
-          zip.generateAsync({ type: "blob" }).then((content) => {
-            saveAs(content, "Custom.mxtpro");
-          }).catch((error) => {
-            console.error('Error creating zip file:', error);
-            showToast('Error creating license file. Please try again.', 'error');
+          const zip = new JSZip();
+          zip.file('Pro.key', licenseStr);
+          return zip.generateAsync({ type: 'blob' }).then((content) => {
+            saveAs(content, 'Custom.mxtpro');
           });
         },
         handleLicenseFileUpload(event) {
@@ -834,6 +916,8 @@
               this.errors.licenseFile = 'Please select a valid .mxtpro file';
             }
           }
+          // Reset so re-selecting the same file fires change again.
+          event.target.value = '';
         },
         handleCustomSettingsFileUpload(event) {
           const file = event.target.files[0];
@@ -846,20 +930,29 @@
               this.errors.customSettingsFile = 'Please select a valid .custom file';
             }
           }
+          // Reset so re-selecting the same file fires change again.
+          event.target.value = '';
         },
         mergeFiles() {
+          if (this.isMerging) {
+            return;
+          }
           if (!this.licenseFile || !this.customSettingsFile) {
             showToast('Please upload both required files', 'error');
             return;
           }
+          this.isMerging = true;
           mergeZipFiles(this.licenseFile, this.customSettingsFile)
             .then((mergedContent) => {
-              saveAs(mergedContent, "Custom.mxtpro");
+              saveAs(mergedContent, 'Custom.mxtpro');
               showToast('Files merged successfully!', 'success');
             })
             .catch((error) => {
               console.error('Error merging files:', error);
               showToast('Error merging files. Please try again.', 'error');
+            })
+            .finally(() => {
+              this.isMerging = false;
             });
         }
       }

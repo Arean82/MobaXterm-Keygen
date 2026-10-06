@@ -21,15 +21,6 @@ const asciiAuraStyle = `
   white-space: pre;
 `;
 
-const warningHeadingStyle = `
-  color: #ff0055;
-  font-size: 44px;
-  font-weight: 900;
-  font-family: 'Outfit', sans-serif, system-ui;
-  text-shadow: 0px 4px 15px rgba(255, 0, 85, 0.4);
-  padding: 10px 0;
-`;
-
 const warningBodyStyle = `
   font-size: 16px;
   color: #d1d5db;
@@ -49,22 +40,17 @@ const signatureStyle = `
 `;
 
 function renderSecureAura() {
-  // Clear any existing logs to present a clean canvas
-  console.clear();
-
-  // Print Aura-style ASCII Art
+  // Print the branding banner. The console is intentionally NOT cleared so the
+  // user keeps their own history, and no false "protected" claim is made.
   console.log('%c' + asciiArt, asciiAuraStyle);
 
-  // Print Warning Message
-  console.log("%cSTOP! SECURE ZONE", warningHeadingStyle);
-  
   console.log(
-    "%cThis is a browser feature intended strictly for developers.\nDo not enter or paste any code you do not fully understand.\nDoing so could grant attackers access to hijack your session, steal your licenses, or impersonate you.\n\nProtect your data and stay safe! 🔒", 
+    "%cThis is a browser console intended for developers.\nDo not paste or run code here unless you fully understand it — doing so can compromise your session.",
     warningBodyStyle
   );
 
-  console.log("%c✨ MobaXterm Keygen System - Shield Active", signatureStyle);
+  console.log("%c✨ MobaXterm Keygen System - v3.1", signatureStyle);
 }
 
-// Render the protective aura once
+// Render the banner once
 renderSecureAura();

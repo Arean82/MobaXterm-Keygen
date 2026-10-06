@@ -1,6 +1,4 @@
 /* VIP Aurora Stripes Background */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
 @keyframes aurora {
     from {
         background-position: 50% 50%, 50% 50%;

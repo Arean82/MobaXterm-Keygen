@@ -1,122 +1,71 @@
-const VariantBase64Table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.split('');
-const VariantBase64Dict = {};
-VariantBase64Table.forEach((val, i) => VariantBase64Dict[i] = val);
-const VariantBase64ReverseDict = {};
-VariantBase64Table.forEach((val, i) => VariantBase64ReverseDict[val] = i);
+// MobaXterm license generator.
+// Loaded as a classic script so it also works when index.html is opened from
+// the local filesystem (file://), where ES modules would be blocked.
+var VariantBase64Table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.split('');
+var VariantBase64Dict = {};
+VariantBase64Table.forEach(function (val, i) { VariantBase64Dict[i] = val; });
 
 /** license type */
-const LicenseType = {
+var LicenseType = {
     Professional: 1,
     Educational: 3,
     Personal: 4
+};
+
+/**
+ * Read up to four little-endian bytes as an unsigned integer.
+ * Missing bytes are treated as zero.
+ * @param {number[]} bytes
+ * @param {number} offset
+ * @returns {number}
+ */
+function bytesToInt(bytes, offset) {
+    return ((bytes[offset] & 0xFF)
+        | ((bytes[offset + 1] & 0xFF) << 8)
+        | ((bytes[offset + 2] & 0xFF) << 16)
+        | ((bytes[offset + 3] & 0xFF) << 24));
 }
 
 /**
- * byte[] is base64 encoded
- * @param {array[Number]} bs 
- * @returns 
+ * Convert a UTF-8 byte array to a string.
+ * @param {number[]} bytes
+ * @returns {string}
  */
-function VariantBase64Encode(bs) {
-    let result = [];
-    let blocks_count = Math.floor(bs.length / 3);
-    let left_bytes = bs.length % 3;
-
-    let coding_int, block;
-    for (let i = 0; i < blocks_count; i++) {
-        coding_int = bs.slice(3 * i, 3 * i + 3).toInt();
-        //coding_int = int.from_bytes(bs[3 * i: 3 * i + 3], 'little');
-        block = VariantBase64Dict[coding_int & 0x3f];
-        block += VariantBase64Dict[(coding_int >> 6) & 0x3f];
-        block += VariantBase64Dict[(coding_int >> 12) & 0x3f];
-        block += VariantBase64Dict[(coding_int >> 18) & 0x3f];
-        result = result.concat(block.toBytes());
-    }
-
-    switch (left_bytes) {
-        case 0:
-            return result;
-        case 1:
-            coding_int = bs.slice(3 * blocks_count).toInt();
-            block = VariantBase64Dict[coding_int & 0x3f];
-            block += VariantBase64Dict[(coding_int >> 6) & 0x3f];
-            result = result.concat(block.toBytes());
-            return result;
-        default:
-            coding_int = bs.slice(3 * blocks_count).toInt();
-            block = VariantBase64Dict[coding_int & 0x3f];
-            block += VariantBase64Dict[(coding_int >> 6) & 0x3f];
-            block += VariantBase64Dict[(coding_int >> 12) & 0x3f];
-            result = result.concat(block.toBytes());
-            return result;
-    }
-}
-
-
-function EncryptBytes(key, bs) {
-    let result = [];
-    bs.forEach(val => {
-        result.push(val ^ ((key >> 8) & 0xff))
-        key = result[-1] & key | 0x482D
-    });
-    return result;
-}
-
-function DecryptBytes(key, bs) {
-    let result = [];
-    bs.forEach(val => {
-        result.push(val ^ ((key >> 8) & 0xff));
-        key = val & key | 0x482D;
-    });
-    return result;
-}
-
-/**
- * byte[] to int for low before high byte[] Python3 in.from_bytes(byte[], 'little')
- * @param {Number} offset Offset, default 0
- * @returns byte[] converted to init
- */
-Array.prototype.toInt = function (offset = 0) {
-    let value = ((this[offset] & 0xFF)
-        | ((this[offset + 1] & 0xFF) << 8)
-        | ((this[offset + 2] & 0xFF) << 16)
-        | ((this[offset + 3] & 0xFF) << 24)
-    );
-    return value;
-}
-
-/**
- * byte[] to string
- */
-Array.prototype.bytesToStr = function () {
-    var str = '',
-        _arr = this;
-    for (var i = 0; i < _arr.length; i++) {
-        var one = _arr[i].toString(2),
-            v = one.match(/^1+?(?=0)/);
-        if (v && one.length == 8) {
-            var bytesLength = v[0].length;
-            var store = _arr[i].toString(2).slice(7 - bytesLength);
-            for (var st = 1; st < bytesLength; st++) {
-                store += _arr[st + i].toString(2).slice(2);
+function bytesToStr(bytes) {
+    var str = '';
+    for (var i = 0; i < bytes.length; i++) {
+        var one = bytes[i].toString(2);
+        var leadingOnes = 0;
+        while (leadingOnes < one.length && one.charAt(leadingOnes) === '1') {
+            leadingOnes++;
+        }
+        var isMultiByte = leadingOnes > 0
+            && leadingOnes < one.length
+            && one.charAt(leadingOnes) === '0'
+            && one.length === 8;
+        if (isMultiByte) {
+            var store = one.slice(7 - leadingOnes);
+            for (var st = 1; st < leadingOnes; st++) {
+                store += bytes[st + i].toString(2).slice(2);
             }
             str += String.fromCharCode(parseInt(store, 2));
-            i += bytesLength - 1;
+            i += leadingOnes - 1;
         } else {
-            str += String.fromCharCode(_arr[i]);
+            str += String.fromCharCode(bytes[i]);
         }
     }
     return str;
 }
 
 /**
- * String to btye[]
+ * Convert a string to a UTF-8 byte array.
+ * @param {string} str
+ * @returns {number[]}
  */
-String.prototype.toBytes = function () {
-    var bytes = new Array();
-    var len, char;
-    len = this.length;
-    for (var i = 0; i < len; i++) {
-        char = this.charCodeAt(i);
+function strToBytes(str) {
+    var bytes = [];
+    for (var i = 0; i < str.length; i++) {
+        var char = str.charCodeAt(i);
         if (char >= 0x010000 && char <= 0x10FFFF) {
             bytes.push(((char >> 18) & 0x07) | 0xF0);
             bytes.push(((char >> 12) & 0x3F) | 0x80);
@@ -137,27 +86,69 @@ String.prototype.toBytes = function () {
 }
 
 /**
-* @param {Number} type License Type
-* @param {string} userName user ID
-* @param {Number} count Number of users supported by license
-* @param {Number} majorVersion Major version number e.g. 21.0 is 21
-* @param {Number} minorVersion Minor version number e.g. 21.0 is 0.
-*/
-function generateLicense(type, userName, count, majorVersion, minorVersion) {
-    /* 
-    LicenseString = '%d#%s|%d%d#%d#%d3%d6%d#%d#%d#%d#' % (
-    Type,
-    UserName, 
-    MajorVersion, MinorVersion,
-    Count,
-    MajorVersion, MinorVersion, MinorVersion,
-    0, # Unknown
-    0, # No Games flag. 0 means "NoGames = false". But it does not work.
-    0) # No Plugins flag. 0 means "NoPlugins = false". But it does not work. 
-    */
+ * Encode bytes with MobaXterm's variant base64 alphabet.
+ * @param {number[]} bs
+ * @returns {number[]}
+ */
+function VariantBase64Encode(bs) {
+    var result = [];
+    var blocksCount = Math.floor(bs.length / 3);
+    var leftBytes = bs.length % 3;
+    var codingInt, block;
+    for (var i = 0; i < blocksCount; i++) {
+        codingInt = bytesToInt(bs, 3 * i);
+        block = VariantBase64Dict[codingInt & 0x3f];
+        block += VariantBase64Dict[(codingInt >> 6) & 0x3f];
+        block += VariantBase64Dict[(codingInt >> 12) & 0x3f];
+        block += VariantBase64Dict[(codingInt >> 18) & 0x3f];
+        result = result.concat(strToBytes(block));
+    }
 
-    let licenseSourceStr = `${type}#${userName}|${majorVersion}${minorVersion}#${count}#${majorVersion}3${minorVersion}6${minorVersion}#0#0#0#`;
-    return VariantBase64Encode(EncryptBytes(0x787, licenseSourceStr.toBytes())).bytesToStr();
+    switch (leftBytes) {
+        case 0:
+            return result;
+        case 1:
+            codingInt = bytesToInt(bs, 3 * blocksCount);
+            block = VariantBase64Dict[codingInt & 0x3f];
+            block += VariantBase64Dict[(codingInt >> 6) & 0x3f];
+            return result.concat(strToBytes(block));
+        default:
+            codingInt = bytesToInt(bs, 3 * blocksCount);
+            block = VariantBase64Dict[codingInt & 0x3f];
+            block += VariantBase64Dict[(codingInt >> 6) & 0x3f];
+            block += VariantBase64Dict[(codingInt >> 12) & 0x3f];
+            return result.concat(strToBytes(block));
+    }
 }
 
-export { LicenseType, generateLicense }
+/**
+ * XOR-encrypt bytes with MobaXterm's key schedule.
+ * The schedule feeds the just-produced ciphertext byte back into the key,
+ * so the last element of the output is used for the next round.
+ * @param {number} key
+ * @param {number[]} bs
+ * @returns {number[]}
+ */
+function EncryptBytes(key, bs) {
+    var result = [];
+    bs.forEach(function (val) {
+        var encrypted = val ^ ((key >> 8) & 0xff);
+        result.push(encrypted);
+        key = encrypted & key | 0x482D;
+    });
+    return result;
+}
+
+/**
+ * @param {number} type License type
+ * @param {string} userName user ID
+ * @param {number} count Number of users supported by license
+ * @param {number} majorVersion Major version number e.g. 21.0 is 21
+ * @param {number} minorVersion Minor version number e.g. 21.0 is 0
+ * @returns {string}
+ */
+function generateLicense(type, userName, count, majorVersion, minorVersion) {
+    var licenseSourceStr = type + '#' + userName + '|' + majorVersion + '' + minorVersion
+        + '#' + count + '#' + majorVersion + '3' + minorVersion + '6' + minorVersion + '#0#0#0#';
+    return bytesToStr(VariantBase64Encode(EncryptBytes(0x787, strToBytes(licenseSourceStr))));
+}

@@ -1,58 +1,76 @@
-/**
- * Utility to merge MobaXterm key file with custom settings file
- */
+// Utility to merge a MobaXterm license file with a custom settings file.
+// Loaded as a classic script (no ES module) so the page also works over file://.
 
 /**
- * Merges a custom settings file with the license file
- * @param {Blob} licenseFile - The Custom.mxtpro license file (which is a ZIP containing Pro.key)
- * @param {Blob} customSettingsFile - The MobaXterm customization.custom file (which is a ZIP with settings)
- * @returns {Promise<Blob>} - A promise that resolves to the merged ZIP file
+ * Reject entry names that could escape the archive or poison object prototypes.
+ * Plain string checks only.
+ * @param {string} name
+ * @returns {boolean} true when the name is unsafe and must be skipped
  */
-function mergeZipFiles(licenseFile, customSettingsFile) {
-  return new Promise((resolve, reject) => {
-    // Create a new JSZip instance for the merged result
-    const mergedZip = new JSZip();
-    const licenseZip = new JSZip();
-    const settingsZip = new JSZip();
-    
-    // First load the license file
-    licenseZip.loadAsync(licenseFile)
-      .then((licenseContents) => {
-        // Then load the custom settings file
-        return settingsZip.loadAsync(customSettingsFile)
-          .then((settingsContents) => {
-            // Get the Pro.key file from license ZIP
-            return licenseContents.file("Pro.key").async("string")
-              .then((proKeyContent) => {
-                // Add the Pro.key to the merged zip
-                mergedZip.file("Pro.key", proKeyContent);
-                
-                // Add all files from the custom settings ZIP
-                const promises = [];
-                settingsContents.forEach((relativePath, file) => {
-                  if (!file.dir) {
-                    const promise = file.async("blob").then((content) => {
-                      mergedZip.file(relativePath, content);
-                    });
-                    promises.push(promise);
-                  }
-                });
-                
-                return Promise.all(promises).then(() => {
-                  // Generate the final merged ZIP file
-                  return mergedZip.generateAsync({type: "blob"});
-                });
-              });
-          });
-      })
-      .then((mergedContent) => {
-        resolve(mergedContent);
-      })
-      .catch((error) => {
-        console.error("Error merging ZIP files:", error);
-        reject(error);
-      });
-  });
+function isUnsafeZipEntryName(name) {
+    if (!name) {
+        return true;
+    }
+    if (name.indexOf('\\') !== -1) {
+        return true;
+    }
+    if (name.charAt(0) === '/') {
+        return true;
+    }
+    if (name.indexOf(':') !== -1) {
+        return true;
+    }
+    var segments = name.split('/');
+    for (var i = 0; i < segments.length; i++) {
+        var segment = segments[i];
+        if (segment === '..'
+            || segment === '__proto__'
+            || segment === 'constructor'
+            || segment === 'prototype') {
+            return true;
+        }
+    }
+    return false;
 }
 
-export { mergeZipFiles };
+/**
+ * Merges a custom settings file with the license file.
+ * @param {Blob} licenseFile - The Custom.mxtpro license file (ZIP containing Pro.key)
+ * @param {Blob} customSettingsFile - The MobaXterm customization.custom file (ZIP with settings)
+ * @returns {Promise<Blob>} resolves to the merged ZIP file
+ */
+async function mergeZipFiles(licenseFile, customSettingsFile) {
+    var licenseZip = await JSZip.loadAsync(licenseFile);
+    var settingsZip = await JSZip.loadAsync(customSettingsFile);
+
+    var proKeyEntry = licenseZip.file('Pro.key');
+    if (!proKeyEntry) {
+        throw new Error('The license file does not contain a Pro.key entry.');
+    }
+    var proKeyContent = await proKeyEntry.async('string');
+
+    var mergedZip = new JSZip();
+    mergedZip.file('Pro.key', proKeyContent);
+
+    var entries = [];
+    settingsZip.forEach(function (relativePath, entry) {
+        if (entry.dir) {
+            return;
+        }
+        if (isUnsafeZipEntryName(relativePath)) {
+            return;
+        }
+        // Never let the settings archive overwrite the license.
+        if (relativePath.toLowerCase() === 'pro.key') {
+            return;
+        }
+        entries.push({ path: relativePath, entry: entry });
+    });
+
+    for (var i = 0; i < entries.length; i++) {
+        var content = await entries[i].entry.async('blob');
+        mergedZip.file(entries[i].path, content);
+    }
+
+    return mergedZip.generateAsync({ type: 'blob' });
+}
